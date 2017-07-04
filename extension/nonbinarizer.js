@@ -3,11 +3,18 @@
  */
 "use strict";
 
+var nonbinarized = false;
+var count = 0;
+
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if( request.message === "nonbinarize-page" ) {
-            var total = nonbinarizePage();
-            chrome.runtime.sendMessage({"message": "nonbinarize-complete", "count": total});
+            count = nonbinarizePage();
+            nonbinarized = true;
+            chrome.runtime.sendMessage({"message": "nonbinarize-complete", "count": count});
+        }
+        if( request.message === "send-stats" ) {
+            chrome.runtime.sendMessage({"message": "stats-sent", "count": count, "status": nonbinarized});
         }
     }
 );
@@ -63,7 +70,7 @@ function nonbinarize(text){
     text = text.replace(re,"People");
     re = new RegExp("\\bmen\\b|\\bmen\\b",g);
     text = text.replace(re,"people");
-    re = new RegExp("\\bMr.\\b|\\bMrs.\\b|\\bMs.\\b",g);
+    re = new RegExp("\\bMr\\.(?!\\S)|\\bMrs\\.(?!\\S)|\\bMs\\.(?!\\S)",g);
     text = text.replace(re,"Mx.");
     return text;
 }
