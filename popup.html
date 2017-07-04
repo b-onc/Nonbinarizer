@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nonbinarizer</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+            font-size: 100%;
+            text-align: center;
+            user-select: none;
+        }
+        #nonbinarize-div {
+            font-size: 80%;
+            border-radius: 5px;
+            border: 1px solid lightpink;
+        }
+        #nonbinarize-div:hover {
+            background: lightpink;
+        }
+        a.fill-div {
+            display: block;
+            height: 100%;
+            width: 100%;
+            text-decoration: none;
+            color: #000;
+        }
+        #stats-div {
+            font-size: 70%;
+        }
+    </style>
+    <script src="popup.js"></script>
+</head>
+<body>
+    <img src="icon.png">
+    <div id="nonbinarize-div"><a href="#" class="fill-div" id="nonbinarize-label">Click to Nonbinarize</a></div>
+    <div id="stats-div"><p>Words neutralized: </p><p id="stat-label">0</p></div>
+</body>
+</html>

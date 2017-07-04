@@ -3,50 +3,54 @@
  */
 "use strict";
 
-console.log("extension loaded");
-
-var elements = "p, h1, h2, h3, h4, span, a";
-
-var children = $(elements);
-children.each(function(i){
-    changeText(this);
-    /*
-    if($(this).children(elements).length == 0){
-        changeText(this);
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if( request.message === "nonbinarize-page" ) {
+            var total = nonbinarizePage();
+            chrome.runtime.sendMessage({"message": "nonbinarize-complete", "count": total});
+        }
     }
-    $(this).children(elements).each(function (j) {
-        changeText(this);
-    });*/
-});
+);
+
+function nonbinarizePage(){
+    var elements = "p, h1, h2, h3, h4, span, a";
+    var total = 0;
+    var children = $(elements);
+    children.each(function(i){
+        total += changeText(this);
+    });
+    return total;
+}
 
 function changeText(el) {
     var that = $(el);
     var text = that.html();
     var nonbinarized = nonbinarize(text);
     if(text !== nonbinarized){
-        console.log("---change found---");
         that.html(nonbinarized);
+        return 1;
     }
+    return 0;
 }
 
 function nonbinarize(text){
     var g = "g";
     var re = new RegExp("\\bHe\\b|\\bShe\\b",g);
-    text = text.replace(re,"Zie");
+    text = text.replace(re,"Ze");
     re = new RegExp("\\bhe\\b|\\bshe\\b",g);
-    text = text.replace(re,"zie");
+    text = text.replace(re,"ze");
     re = new RegExp("\\bHim\\b|\\bHer\\b",g);
-    text = text.replace(re,"Zim");
+    text = text.replace(re,"Zir");
     re = new RegExp("\\bhim\\b|\\bher\\b",g);
-    text = text.replace(re,"zim");
+    text = text.replace(re,"zir");
     re = new RegExp("\\bHis\\b|\\bHer\\b",g);
     text = text.replace(re,"Zir");
     re = new RegExp("\\bhis\\b|\\bher\\b",g);
     text = text.replace(re,"zir");
     re = new RegExp("\\bHis\\b|\\bHers\\b",g);
-    text = text.replace(re,"Zis");
+    text = text.replace(re,"Zirs");
     re = new RegExp("\\bhis\\b|\\bhers\\b",g);
-    text = text.replace(re,"zis");
+    text = text.replace(re,"zirs");
     re = new RegExp("\\bHimself\\b|\\bHerself\\b",g);
     text = text.replace(re,"Zieself");
     re = new RegExp("\\bhimself\\b|\\bherself\\b",g);
@@ -59,5 +63,7 @@ function nonbinarize(text){
     text = text.replace(re,"People");
     re = new RegExp("\\bmen\\b|\\bmen\\b",g);
     text = text.replace(re,"people");
+    re = new RegExp("\\bMr.\\b|\\bMrs.\\b|\\bMs.\\b",g);
+    text = text.replace(re,"Mx.");
     return text;
 }
